@@ -6,6 +6,6 @@ import Root from './root.component';
 describe('Root component', () => {
     it('should be in the document', () => {
         render(<Root />);
-        expect(screen.getByText('Header is mounted!')).toBeInTheDocument();
+        expect(screen.getByText('Housing tool')).toBeInTheDocument();
     });
 });
