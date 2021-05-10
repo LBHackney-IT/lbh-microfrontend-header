@@ -31,7 +31,7 @@
         "buffer": false
     },
     "dependencies": {
-        "@mtfh/auth": "git+ssh://git@github.com:LBHackney-IT/mtfh-frontend-authentication.git",
+        "@mtfh/auth": "git+ssh://git@github.com:LBHackney-IT/mtfh-frontend-authentication.git#v0.0.1",
         "lbh-frontend": "3.5.2",
         "react": "17.0.2",
         "react-dom": "17.0.2"
