@@ -2,3 +2,14 @@
 @import '~lbh-frontend/lbh/core/all';
 @import '~lbh-frontend/lbh/objects/all';
 @import '~lbh-frontend/lbh/components/lbh-header/header';
+
+button.lbh-link.lbh-signout {
+    color: #ffffff;
+    font-weight: $lbh-font-weight-regular;
+    margin: 0.8251rem 0 0 1rem;
+    vertical-align: bottom;
+}
+
+.lbh-header__links b {
+    font-weight: $lbh-font-weight-bold;
+}

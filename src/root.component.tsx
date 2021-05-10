@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { $auth, isAuthorised, logout } from '@mtfh/auth';
 
 export default function Root(): JSX.Element {
+    const [auth, setAuth] = useState($auth.getValue());
+
+    useEffect(() => {
+        const sub = $auth.subscribe(setAuth);
+        return () => {
+            sub.unsubscribe();
+        };
+    });
+
     return (
         <header className="lbh-header">
             <div className="lbh-header__main">
@@ -45,8 +56,21 @@ export default function Root(): JSX.Element {
                         </div>
                     </div>
                     <div className="lbh-header__links">
-                        <p>Anne James</p>
-                        <a href="">Sign out</a>
+                        {isAuthorised() ? (
+                            <>
+                                <p>
+                                    Welcome <b>{auth.name}</b>
+                                </p>
+                                <button
+                                    onClick={() => logout()}
+                                    className="lbh-link lbh-signout"
+                                >
+                                    Sign out
+                                </button>
+                            </>
+                        ) : (
+                            <a href="/login">Sign in</a>
+                        )}
                     </div>
                 </div>
             </div>
