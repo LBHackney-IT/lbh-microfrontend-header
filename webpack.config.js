@@ -22,5 +22,6 @@ module.exports = (webpackConfigEnv, argv) => {
                 },
             ],
         },
+        externals: ['@mtfh/auth'],
     });
 };
