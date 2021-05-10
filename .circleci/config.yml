@@ -222,13 +222,13 @@ workflows:
             - assume-role-production:
                   context: api-assume-role-housing-production-context
                   requires:
-                      - build-deploy-staging
+                      - permit-production-terraform-release
                   filters:
                       branches:
                           only: main
             - terraform-init-and-apply-to-production:
                   requires:
-                      - permit-production-terraform-release
+                      - assume-role-production
                   filters:
                       branches:
                           only: main
