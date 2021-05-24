@@ -18,7 +18,7 @@ const mockUser = {
 describe('Root component', () => {
     it('should be in the document', () => {
         const { getByText } = render(<Root />);
-        expect(getByText('Housing tool')).toBeInTheDocument();
+        expect(getByText('Manage my Home')).toBeInTheDocument();
     });
 
     it('should show sign in for unauthorised users', () => {

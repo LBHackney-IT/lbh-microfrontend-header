@@ -50,7 +50,7 @@ export default function Root(): JSX.Element {
                                     Hackney
                                 </span>
                                 <span className="lbh-header__service-name">
-                                    Housing tool
+                                    Manage my Home
                                 </span>
                             </a>
                         </div>
