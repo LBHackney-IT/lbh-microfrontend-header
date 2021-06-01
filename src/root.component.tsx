@@ -15,7 +15,7 @@ export default function Root(): JSX.Element {
     return (
         <header className="lbh-header">
             <div className="lbh-header__main">
-                <div className="lbh-container lbh-header__wrapper lbh-header__wrapper--stacked">
+                <div className="container-max-width lbh-header__wrapper lbh-header__wrapper--stacked">
                     <div className="mtfh-header__section">
                         <div className="lbh-header__title">
                             <a href="/" className="lbh-header__title-link">
