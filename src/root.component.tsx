@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { $auth, isAuthorised, logout } from '@mtfh/auth';
+import { $auth, isAuthorised, logout } from '@mtfh/common';
 
 export default function Root(): JSX.Element {
     const [auth, setAuth] = useState($auth.getValue());
