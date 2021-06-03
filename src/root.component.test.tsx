@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
-import { isAuthorised, $auth } from '@mtfh/auth';
+import { isAuthorised, $auth } from '@mtfh/common';
 import Root from './root.component';
 
 const mockUser = {
