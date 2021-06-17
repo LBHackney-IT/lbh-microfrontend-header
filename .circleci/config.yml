@@ -5,6 +5,15 @@ orbs:
     aws-cli: circleci/aws-cli@2.0.0
     aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
 
+parameters:
+    run-development-workflow:
+        default: true
+        type: boolean
+
+    run-temporary-workflow:
+        default: false
+        type: boolean
+
 references:
     workspace_root: &workspace_root '~'
     attach_workspace: &attach_workspace
@@ -181,6 +190,7 @@ jobs:
 workflows:
     version: 2
     continuous-delivery-development:
+        when: << pipeline.parameters.run-development-workflow >>
         jobs:
             - install-dependencies
             - lint-and-test:
@@ -260,4 +270,11 @@ workflows:
                   filters:
                       branches:
                           only: main
-                          
+        
+    temporary-workflow:
+        when: << pipeline.parameters.run-temporary-workflow >>
+        jobs:
+            - install-dependencies
+            - lint-and-test:
+                  requires:
+                      - install-dependencies
