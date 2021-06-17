@@ -170,9 +170,9 @@ jobs:
     
     trigger-e2e-pipeline:
         docker:
-            - image: cimg/base:2021.05
+        - image: cimg/base:2021.05
         steps:
-            - run: |
+        - run: |
             curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
             --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
             --header 'Content-Type: application/json' \
@@ -186,6 +186,12 @@ workflows:
             - lint-and-test:
                   requires:
                       - install-dependencies
+            - trigger-e2e-pipeline:
+                  requires:
+                      - lint-and-test
+                  filters:
+                      branches:
+                          only: MTTL-856-configure-e2e-pipeline-trigger
             - assume-role-development:
                   context: api-assume-role-housing-development-context
                   requires:
@@ -203,12 +209,6 @@ workflows:
                   stage: "development"
                   requires:
                       - terraform-init-and-apply-to-development
-                  filters:
-                      branches:
-                          only: main
-            - trigger-e2e-pipeline:
-                  requires:
-                      - build-deploy-development
                   filters:
                       branches:
                           only: main
