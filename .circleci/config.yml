@@ -185,7 +185,17 @@ jobs:
             curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
             --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
             --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "run_workflow_GoogleLighthouse": true, "external_trigger": true, "external_pipeline": "header", "target_environment": "development"}}'
+            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", development_environment: "true"}}'
+
+    trigger-e2e-pipeline-staging:
+        docker:
+        - image: cimg/base:2021.05
+        steps:
+        - run: |
+            curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
+            --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
+            --header 'Content-Type: application/json' \
+            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", staging_environment: "true"}}'        
 
 workflows:
     version: 2
@@ -274,7 +284,4 @@ workflows:
     temporary-workflow:
         when: << pipeline.parameters.run-temporary-workflow >>
         jobs:
-            - install-dependencies
-            - lint-and-test:
-                  requires:
-                      - install-dependencies
+          - trigger-e2e-pipeline-staging
