@@ -185,7 +185,7 @@ jobs:
             curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
             --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
             --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", development_environment: "true"}}'
+            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", "development_environment": true}}'
 
     trigger-e2e-pipeline-staging:
         docker:
@@ -195,7 +195,7 @@ jobs:
             curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
             --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
             --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", staging_environment: "true"}}'        
+            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", "staging_environment": true}}'        
 
 workflows:
     version: 2
