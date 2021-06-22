@@ -14,6 +14,18 @@ parameters:
         default: false
         type: boolean
 
+    development_deploy:
+        default: false
+        type: boolean
+
+    staging_deploy:
+        default: false
+        type: boolean
+
+    production_deploy:
+        default: false
+        type: boolean
+
 references:
     workspace_root: &workspace_root '~'
     attach_workspace: &attach_workspace
@@ -281,7 +293,18 @@ workflows:
                       branches:
                           only: main
         
-    temporary-workflow:
-        when: << pipeline.parameters.run-temporary-workflow >>
+    temporary-workflow-staging:
+        when:
+            and:
+            - equal: [ << pipeline.parameters.staging_deploy >> ]
+            - or: [ << pipeline.parameters.run-temporary-workflow >> ]
         jobs:
           - trigger-e2e-pipeline-staging
+
+    # temporary-workflow-production:
+    #     when:
+    #         and:
+    #         - equal: [ << pipeline.parameters.production_deploy >> ]
+    #         - or: [ << pipeline.parameters.run-temporary-workflow >> ]
+    #     jobs:
+    #       - trigger-e2e-pipeline-staging
