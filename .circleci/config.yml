@@ -306,15 +306,15 @@ workflows:
     temporary-workflow-staging:
         when:
             and:
-            - equal: [ << pipeline.parameters.staging_deploy >> ]
-            - or: [ << pipeline.parameters.run-temporary-workflow >> ]
+            - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
+            - or: [ << pipeline.parameters.staging_deploy >> ]
         jobs:
           - trigger-e2e-pipeline-staging
 
     temporary-workflow-production:
         when:
             and:
-            - equal: [ << pipeline.parameters.production_deploy >> ]
-            - or: [ << pipeline.parameters.run-temporary-workflow >> ]
+            - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
+            - or: [ << pipeline.parameters.production_deploy >> ]
         jobs:
           - trigger-e2e-pipeline-production
