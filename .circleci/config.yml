@@ -19,14 +19,6 @@ parameters:
         default: false
         type: boolean
 
-    run_temporary_workflow:
-        default: false
-        type: boolean
-
-    dont_run_for_now:
-        default: false
-        type: boolean
-
 references:
     workspace_root: &workspace_root '~'
     attach_workspace: &attach_workspace
@@ -246,7 +238,7 @@ workflows:
                           only: MTTL-856-configure-e2e-pipeline-trigger
 
     continuous-delivery-staging:
-        when: << pipeline.parameters.dont_run_for_now >>
+        when: << pipeline.parameters.run_staging_workflow >>
         jobs:
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
@@ -267,17 +259,20 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
-                  requires:
-                      - build-deploy-staging
+                #   requires:
+                #       - build-deploy-staging
                   filters:
                       branches:
                           only: MTTL-856-configure-e2e-pipeline-trigger
 
     continuous-delivery-production:
-        when: << pipeline.parameters.dont_run_for_now >>
+        when: << pipeline.parameters.run_production_workflow >>
         jobs:   
             - permit-production-terraform-release:
                   type: approval
+                  filters:
+                      branches:
+                          only: main
             - assume-role-production:
                   context: api-assume-role-housing-production-context
                   requires:
@@ -303,24 +298,8 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
-                  requires:
-                      - build-deploy-production
+                #   requires:
+                #       - build-deploy-production
                   filters:
                       branches:
                           only: MTTL-856-configure-e2e-pipeline-trigger
-        
-    temporary-workflow-staging:
-        when:
-            and:
-            - equal: [ << pipeline.parameters.run_temporary_workflow >> ]
-            - or: [ << pipeline.parameters.run_staging_workflow >> ]
-        jobs:
-          - trigger-e2e-pipeline
-
-    temporary-workflow-production:
-        when:
-            and:
-            - equal: [ << pipeline.parameters.run_temporary_workflow >> ]
-            - or: [ << pipeline.parameters.run_production_workflow >> ]
-        jobs:
-          - trigger-e2e-pipeline
