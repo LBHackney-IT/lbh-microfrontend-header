@@ -7,6 +7,7 @@ orbs:
 
 parameters:
     run_development_workflow:
+        description: This will run by default when a code commit or merge is performed
         default: true
         type: boolean
 
