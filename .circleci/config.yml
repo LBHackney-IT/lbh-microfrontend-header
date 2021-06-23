@@ -23,7 +23,7 @@ parameters:
         type: boolean
 
     dont_run_for_now:
-        default: true
+        default: false
         type: boolean
 
 references:
@@ -211,7 +211,7 @@ jobs:
 workflows:
     version: 2
     continuous-delivery-development:
-        when: << pipeline.parameters.run-development-workflow >>
+        when: << pipeline.parameters.run_development_workflow >>
         jobs:
             - install-dependencies
             - lint-and-test:
@@ -245,7 +245,7 @@ workflows:
                           only: MTTL-856-configure-e2e-pipeline-trigger
 
     continuous-delivery-staging:
-        when: << dont_run_for_now >>
+        when: << pipeline.parameters.dont_run_for_now >>
         jobs:
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
@@ -273,7 +273,7 @@ workflows:
                           only: MTTL-856-configure-e2e-pipeline-trigger
 
     continuous-delivery-production:
-        when: << dont_run_for_now >>
+        when: << pipeline.parameters.dont_run_for_now >>
         jobs:   
             - permit-production-terraform-release:
                   type: approval
@@ -311,15 +311,15 @@ workflows:
     temporary-workflow-staging:
         when:
             and:
-            - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
-            - or: [ << pipeline.parameters.staging_deploy >> ]
+            - equal: [ << pipeline.parameters.run_temporary_workflow >> ]
+            - or: [ << pipeline.parameters.run_staging_workflow >> ]
         jobs:
           - trigger-e2e-pipeline
 
     temporary-workflow-production:
         when:
             and:
-            - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
-            - or: [ << pipeline.parameters.production_deploy >> ]
+            - equal: [ << pipeline.parameters.run_temporary_workflow >> ]
+            - or: [ << pipeline.parameters.run_production_workflow >> ]
         jobs:
           - trigger-e2e-pipeline
