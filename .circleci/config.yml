@@ -7,7 +7,6 @@ orbs:
 
 parameters:
     run_development_workflow:
-        description: The default behaviour of the pipeline when a commit and/or merge is performed.
         default: true
         type: boolean
 
