@@ -239,7 +239,7 @@ workflows:
                           only: main
             - trigger-e2e-pipeline:
                   requires:
-                      - build-deploy-development
+                      - lint-and-test
                   filters:
                       branches:
                           only: MTTL-856-configure-e2e-pipeline-trigger
