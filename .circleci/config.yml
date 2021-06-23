@@ -6,24 +6,24 @@ orbs:
     aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
 
 parameters:
-    run-development-workflow:
+    run_development_workflow:
         default: true
         type: boolean
 
-    run-temporary-workflow:
+    run_staging_workflow:
+        default: false
+        type: boolean
+    
+    run_production_workflow:
         default: false
         type: boolean
 
-    development_deploy:
+    run_temporary_workflow:
         default: false
         type: boolean
 
-    staging_deploy:
-        default: false
-        type: boolean
-
-    production_deploy:
-        default: false
+    dont_run_for_now:
+        default: true
         type: boolean
 
 references:
@@ -194,30 +194,19 @@ jobs:
         - image: cimg/base:2021.05
         steps:
         - run: |
-            curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
-            --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
-            --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", "development_environment": true}}'
-
-    trigger-e2e-pipeline-staging:
-        docker:
-        - image: cimg/base:2021.05
-        steps:
-        - run: |
-            curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
-            --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
-            --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", "staging_environment": true}}'
-
-    trigger-e2e-pipeline-production:
-        docker:
-        - image: cimg/base:2021.05
-        steps:
-        - run: |
-            curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
-            --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
-            --header 'Content-Type: application/json' \
-            --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", "production_environment": true}}'         
+                case << pipeline.parameters.run_development_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='development_environment' ;;
+                esac
+                case << pipeline.parameters.run_staging_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='staging_environment' ;;
+                esac
+                case << pipeline.parameters.run_production_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='production_environment' ;;
+                esac
+                curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
+                --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
+                --header 'Content-Type: application/json' \
+                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'        
 
 workflows:
     version: 2
@@ -228,12 +217,6 @@ workflows:
             - lint-and-test:
                   requires:
                       - install-dependencies
-            - trigger-e2e-pipeline:
-                  requires:
-                      - lint-and-test
-                  filters:
-                      branches:
-                          only: MTTL-856-configure-e2e-pipeline-trigger
             - assume-role-development:
                   context: api-assume-role-housing-development-context
                   requires:
@@ -254,10 +237,18 @@ workflows:
                   filters:
                       branches:
                           only: main
-            - assume-role-staging:
-                  context: api-assume-role-housing-staging-context
+            - trigger-e2e-pipeline:
                   requires:
                       - build-deploy-development
+                  filters:
+                      branches:
+                          only: MTTL-856-configure-e2e-pipeline-trigger
+
+    continuous-delivery-staging:
+        when: << dont_run_for_now >>
+        jobs:
+            - assume-role-staging:
+                  context: api-assume-role-housing-staging-context
                   filters:
                       branches:
                           only: main
@@ -274,10 +265,18 @@ workflows:
                   filters:
                       branches:
                           only: main
-            - permit-production-terraform-release:
-                  type: approval
+            - trigger-e2e-pipeline:
                   requires:
                       - build-deploy-staging
+                  filters:
+                      branches:
+                          only: MTTL-856-configure-e2e-pipeline-trigger
+
+    continuous-delivery-production:
+        when: << dont_run_for_now >>
+        jobs:   
+            - permit-production-terraform-release:
+                  type: approval
             - assume-role-production:
                   context: api-assume-role-housing-production-context
                   requires:
@@ -302,6 +301,12 @@ workflows:
                   filters:
                       branches:
                           only: main
+            - trigger-e2e-pipeline:
+                  requires:
+                      - build-deploy-production
+                  filters:
+                      branches:
+                          only: MTTL-856-configure-e2e-pipeline-trigger
         
     temporary-workflow-staging:
         when:
@@ -309,7 +314,7 @@ workflows:
             - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
             - or: [ << pipeline.parameters.staging_deploy >> ]
         jobs:
-          - trigger-e2e-pipeline-staging
+          - trigger-e2e-pipeline
 
     temporary-workflow-production:
         when:
@@ -317,4 +322,4 @@ workflows:
             - equal: [ << pipeline.parameters.run-temporary-workflow >> ]
             - or: [ << pipeline.parameters.production_deploy >> ]
         jobs:
-          - trigger-e2e-pipeline-production
+          - trigger-e2e-pipeline
