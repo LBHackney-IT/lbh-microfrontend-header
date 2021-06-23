@@ -7,6 +7,7 @@ orbs:
 
 parameters:
     run_development_workflow:
+        description: The default behaviour of the pipeline when a commit and/or merge is performed.
         default: true
         type: boolean
 
@@ -206,7 +207,7 @@ jobs:
                 curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
                 --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
                 --header 'Content-Type: application/json' \
-                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "external_pipeline": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'        
+                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'        
 
 workflows:
     version: 2
