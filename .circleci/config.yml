@@ -23,6 +23,7 @@ parameters:
         type: boolean
 
     failing_e2e_tests:
+        description: Run the failure workflow if an e2e test fails
         default: false
         type: boolean
 
