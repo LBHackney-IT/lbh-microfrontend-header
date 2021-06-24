@@ -27,11 +27,6 @@ parameters:
         default: false
         type: boolean
 
-    arbitrary-parameter:
-        description: Arbitrary param
-        default: false
-        type: boolean
-
 references:
     workspace_root: &workspace_root '~'
     attach_workspace: &attach_workspace
