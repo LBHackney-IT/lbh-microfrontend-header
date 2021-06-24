@@ -214,10 +214,10 @@ workflows:
     continuous-delivery-development:
         when: << pipeline.parameters.run_development_workflow >>
         jobs:
-            - install-dependencies
-            - lint-and-test:
-                  requires:
-                      - install-dependencies
+            # - install-dependencies
+            # - lint-and-test:
+            #       requires:
+            #           - install-dependencies
             - assume-role-development:
                   context: api-assume-role-housing-development-context
                   requires:
@@ -239,8 +239,8 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
-                  requires:
-                      - lint-and-test
+                #   requires:
+                #       - lint-and-test
                   filters:
                       branches:
                           only: MTTL-856-configure-e2e-pipeline-trigger
