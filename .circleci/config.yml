@@ -215,7 +215,7 @@ jobs:
         - run: |
                 echo "I got here!"
         - continuation/continue:
-                configuration_path: ./config.yml     
+                configuration_path: ~/config.yml     
 
 workflows:
     version: 2
