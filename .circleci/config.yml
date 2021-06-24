@@ -207,7 +207,15 @@ jobs:
                 curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
                 --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
                 --header 'Content-Type: application/json' \
-                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true, "continuation_key": '\""$CIRCLE_CONTINUATION_KEY"\"'}}'        
+                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true, "continuation_key": '\""$CIRCLE_CONTINUATION_KEY"\"'}}' 
+
+    setup:
+        executor: continuation/default
+        steps:
+        - run: |
+                echo "I got here!"
+        - continuation/continue:
+                configuration_path: ./config.yml     
 
 workflows:
     version: 2
@@ -315,5 +323,5 @@ workflows:
     fail-pipeline:
         when: << pipeline.parameters.failing_e2e_tests >>
         jobs:
-            - continuation/continue:
-                configuration_path: ./config.yml
+            - setup
+            
