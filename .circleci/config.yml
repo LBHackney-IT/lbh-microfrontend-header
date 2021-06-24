@@ -315,6 +315,6 @@ workflows:
     fail-pipeline:
         when: << pipeline.parameters.failing_e2e_tests >>
         jobs:
-            - install-dependencies
+            - checkout
             - continuation/continue:
                 configuration_path: .circleci/config.yml
