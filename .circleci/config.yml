@@ -1,9 +1,12 @@
 version: 2.1
 
+setup: true
+
 orbs:
     aws-s3: circleci/aws-s3@2.0.0
     aws-cli: circleci/aws-cli@2.0.0
     aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
+    continuation: circleci/continuation@0.2.0
 
 parameters:
     run_development_workflow:
@@ -16,6 +19,10 @@ parameters:
         type: boolean
     
     run_production_workflow:
+        default: false
+        type: boolean
+
+    failing_e2e_tests:
         default: false
         type: boolean
 
@@ -199,7 +206,7 @@ jobs:
                 curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
                 --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
                 --header 'Content-Type: application/json' \
-                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'        
+                --data ' {"branch": "trigger_workflow_via_api", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true, "continuation_key" '\""$CIRCLE_CONTINUATION_KEY"\"'}}'        
 
 workflows:
     version: 2
@@ -303,3 +310,9 @@ workflows:
                   filters:
                       branches:
                           only: MTTL-856-configure-e2e-pipeline-trigger
+
+    fail-pipeline:
+        when: << pipeline.parameters.failing_e2e_tests >>
+        jobs:
+            - continuation/continue:
+                configuration_path: ./config.yml
