@@ -322,6 +322,3 @@ workflows:
             when: << pipeline.parameters.e2e_test_failure >>
             jobs:
                 - failure-downstream
-            filters:
-                branches:
-                    only: MTTL-856-configure-e2e-pipeline-trigger
