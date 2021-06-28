@@ -193,7 +193,7 @@ jobs:
         - image: cimg/base:2021.05
         steps:
         - run: |
-                echo downstream e2e tests have failed! Please check the e2e pipeline ;
+                echo downstream e2e tests have failed! Please check the e2e pipeline: ;
                 echo -e 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' ;
                 exit 1
 
