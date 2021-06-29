@@ -312,12 +312,12 @@ workflows:
                   filters:
                       branches:
                           only: main
-            - trigger-e2e-pipeline:
-                #   requires:
-                #       - build-deploy-production
-                  filters:
-                      branches:
-                          only: MTTL-856-configure-e2e-pipeline-trigger
+            # - trigger-e2e-pipeline:
+            #       requires:
+            #           - build-deploy-production
+            #       filters:
+            #           branches:
+            #               only: MTTL-856-configure-e2e-pipeline-trigger
 
     e2e-tests-failure:
         when: << pipeline.parameters.e2e_test_failure >>
