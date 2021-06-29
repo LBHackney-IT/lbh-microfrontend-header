@@ -260,10 +260,16 @@ workflows:
                   filters:
                       branches:
                           only: main
+            - install-dependencies:
+                  requires:
+                      - permit-deploy-staging
+            - lint-and-test:
+                  requires:
+                      - install-dependencies
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
                   requires:
-                      - permit-deploy-staging
+                      - lint-and-test
                   filters:
                       branches:
                           only: main
@@ -295,10 +301,16 @@ workflows:
                   filters:
                       branches:
                           only: main
+            - install-dependencies:
+                  requires:
+                      - permit-production-terraform-release
+            - lint-and-test:
+                  requires:
+                      - install-dependencies
             - assume-role-production:
                   context: api-assume-role-housing-production-context
                   requires:
-                      - permit-production-terraform-release
+                      - lint-and-test
                   filters:
                       branches:
                           only: main
