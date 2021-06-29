@@ -247,7 +247,7 @@ workflows:
                           only: main
             - trigger-e2e-pipeline:
                   requires:
-                      - lint-and-test
+                      - build-deploy-development
                   filters:
                       branches:
                           only: main
