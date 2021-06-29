@@ -5,6 +5,25 @@ orbs:
     aws-cli: circleci/aws-cli@2.0.0
     aws_assume_role: lbh-hackit/aws_assume_role@0.1.0
 
+parameters:
+    run_development_workflow:
+        description: This will run by default when a code commit or merge is performed
+        default: true
+        type: boolean
+
+    run_staging_workflow:
+        default: false
+        type: boolean
+    
+    run_production_workflow:
+        default: false
+        type: boolean
+
+    e2e_test_failure:
+        description: Run the failure workflow if the e2e tests fail downstream
+        default: false
+        type: boolean
+
 references:
     workspace_root: &workspace_root '~'
     attach_workspace: &attach_workspace
@@ -55,6 +74,7 @@ commands:
                   command: |
                       cd ./terraform/<<parameters.environment>>/
                       terraform apply -auto-approve
+
 jobs:
     install-dependencies:
         executor: node-executor
@@ -167,9 +187,39 @@ jobs:
         steps:
             - terraform-init-then-apply:
                   environment: "production"
+
+    trigger-e2e-pipeline:
+        docker:
+        - image: cimg/base:2021.05
+        steps:
+        - run: |
+                case << pipeline.parameters.run_development_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='development_environment' ;;
+                esac
+                case << pipeline.parameters.run_staging_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='staging_environment' ;;
+                esac
+                case << pipeline.parameters.run_production_workflow >> in
+                (true) export DEPLOYMENT_ENVIRONMENT='production_environment' ;;
+                esac
+                curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
+                --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
+                --header 'Content-Type: application/json' \
+                --data '{"branch": "master", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'
+
+    failure-downstream:
+        docker:
+        - image: cimg/base:2021.05
+        steps:
+        - run: |
+                echo downstream e2e tests have failed! Please check the e2e pipeline: ;
+                echo -e 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' ;
+                exit 1
+
 workflows:
     version: 2
     continuous-delivery-development:
+        when: << pipeline.parameters.run_development_workflow >>
         jobs:
             - install-dependencies
             - lint-and-test:
@@ -195,10 +245,18 @@ workflows:
                   filters:
                       branches:
                           only: main
+            - trigger-e2e-pipeline:
+                  requires:
+                      - lint-and-test
+                  filters:
+                      branches:
+                          only: main
+
+    continuous-delivery-staging:
+        when: << pipeline.parameters.run_staging_workflow >>
+        jobs:
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
-                  requires:
-                      - build-deploy-development
                   filters:
                       branches:
                           only: main
@@ -208,17 +266,32 @@ workflows:
                   filters:
                       branches:
                           only: main
+            - permit-deploy-staging:
+                  type: approval
+                  requires:
+                      - terraform-init-and-apply-to-staging
             - build-deploy-staging:
                   stage: "staging"
                   requires:
-                      - terraform-init-and-apply-to-staging
+                      - permit-deploy-staging
                   filters:
                       branches:
                           only: main
-            - permit-production-terraform-release:
-                  type: approval
+            - trigger-e2e-pipeline:
                   requires:
                       - build-deploy-staging
+                  filters:
+                      branches:
+                          only: main
+
+    continuous-delivery-production:
+        when: << pipeline.parameters.run_production_workflow >>
+        jobs:   
+            - permit-production-terraform-release:
+                  type: approval
+                  filters:
+                      branches:
+                          only: main
             - assume-role-production:
                   context: api-assume-role-housing-production-context
                   requires:
@@ -243,4 +316,14 @@ workflows:
                   filters:
                       branches:
                           only: main
-                          
+            - trigger-e2e-pipeline:
+                  requires:
+                      - build-deploy-production
+                  filters:
+                      branches:
+                          only: main
+
+    e2e-tests-failure:
+        when: << pipeline.parameters.e2e_test_failure >>
+        jobs:
+            - failure-downstream
