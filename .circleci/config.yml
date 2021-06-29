@@ -255,8 +255,15 @@ workflows:
     continuous-delivery-staging:
         when: << pipeline.parameters.run_staging_workflow >>
         jobs:
+            - permit-deploy-staging:
+                  type: approval
+                  filters:
+                      branches:
+                          only: main
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
+                  requires:
+                      - permit-deploy-staging
                   filters:
                       branches:
                           only: main
@@ -266,14 +273,10 @@ workflows:
                   filters:
                       branches:
                           only: main
-            - permit-deploy-staging:
-                  type: approval
-                  requires:
-                      - terraform-init-and-apply-to-staging
             - build-deploy-staging:
                   stage: "staging"
                   requires:
-                      - permit-deploy-staging
+                      - terraform-init-and-apply-to-staging
                   filters:
                       branches:
                           only: main
