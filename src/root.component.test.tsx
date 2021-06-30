@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { render, screen } from '@testing-library/react';
 
-import { isAuthorised, $auth } from '@mtfh/common';
+import { $auth, logout } from '@mtfh/common';
 import Root from './root.component';
 
 const mockUser = {
@@ -15,31 +16,36 @@ const mockUser = {
     iat: 1234,
 };
 
+jest.mock('@mtfh/common', () => {
+    const originalModule = jest.requireActual('@mtfh/common');
+    return {
+        ...originalModule,
+        logout: jest.fn(),
+    };
+});
+
 describe('Root component', () => {
     it('should be in the document', () => {
-        const { getByText } = render(<Root />);
-        expect(getByText('Manage my Home')).toBeInTheDocument();
+        render(<Root />);
+        expect(screen.getByText('Manage my Home')).toBeInTheDocument();
     });
 
     it('should show sign in for unauthorised users', () => {
-        const { getByText } = render(<Root />);
-        expect(isAuthorised()).toBe(false);
-        expect(getByText('Sign in')).toBeInTheDocument();
+        render(<Root />);
+        expect(screen.getByText('Sign in')).toBeInTheDocument();
     });
 
     it('should show authenticated users name', () => {
         $auth.next(mockUser);
-        const { getByText } = render(<Root />);
-        expect(isAuthorised()).toBe(true);
-        expect(getByText('Tom Smith')).toBeInTheDocument();
+        render(<Root />);
+        expect(screen.getByText('Tom Smith')).toBeInTheDocument();
     });
 
     it('signing out should revert to unauthorised state', () => {
         $auth.next(mockUser);
-        const { getByText } = render(<Root />);
-        expect(getByText('Tom Smith')).toBeInTheDocument();
-        const signout = getByText('Sign out');
-        fireEvent.click(signout);
-        expect(getByText('Sign in')).toBeInTheDocument();
+        render(<Root />);
+        const signOut = screen.getByText('Sign out');
+        userEvent.click(signOut);
+        expect(logout).toHaveBeenCalledTimes(1);
     });
 });
