@@ -22,6 +22,6 @@ module.exports = (webpackConfigEnv, argv) => {
                 },
             ],
         },
-        externals: ['@mtfh/auth'],
+        externals: ['react-router-dom'],
     });
 };
