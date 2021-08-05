@@ -37,6 +37,9 @@ executors:
     docker-terraform:
         docker:
             - image: "hashicorp/terraform:light"
+    cimg-base:
+        docker:
+            - image: cimg/base:2021.05
 
 commands:
     assume-role-and-persist-workspace:
@@ -189,8 +192,7 @@ jobs:
                   environment: "production"
 
     trigger-e2e-pipeline:
-        docker:
-        - image: cimg/base:2021.05
+        executor: cimg-base
         steps:
         - run: |
                 case << pipeline.parameters.run_development_workflow >> in
@@ -205,11 +207,10 @@ jobs:
                 curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
                 --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
                 --header 'Content-Type: application/json' \
-                --data '{"branch": "master", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "header", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'
+                --data '{"branch": "master", "parameters": {"run_workflow_ci": false, "external_trigger": true, "upstream_pipeline_name": "<< pipeline.project.git_url >>", '\""$DEPLOYMENT_ENVIRONMENT"\"': true}}'
 
     failure-downstream:
-        docker:
-        - image: cimg/base:2021.05
+        executor: cimg-base
         steps:
         - run: |
                 echo downstream e2e tests have failed! Please check the e2e pipeline: ;
@@ -246,6 +247,7 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
+                  context: mtfh-mfe-e2e-tests
                   requires:
                       - build-deploy-development
                   filters:
@@ -287,6 +289,7 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
+                  context: mtfh-mfe-e2e-tests
                   requires:
                       - build-deploy-staging
                   filters:
@@ -332,13 +335,15 @@ workflows:
                       branches:
                           only: main
             - trigger-e2e-pipeline:
+                  context: mtfh-mfe-e2e-tests
                   requires:
                       - build-deploy-production
                   filters:
                       branches:
                           only: main
-
+    
     e2e-tests-failure:
         when: << pipeline.parameters.e2e_test_failure >>
         jobs:
-            - failure-downstream
+            - failure-downstream:
+                context: mtfh-mfe-e2e-tests
