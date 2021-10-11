@@ -253,27 +253,27 @@ workflows:
             #       filters:
             #           branches:
             #               only: main
-            - assume-role-development:
-                  context: api-assume-role-housing-development-context
-                  requires:
-                    #   - security-scan
-                      - lint-and-test
-                  filters:
-                      branches:
-                          only: main
-            - terraform-init-and-apply-to-development:
-                  requires:
-                      - assume-role-development
-                  filters:
-                      branches:
-                          only: main
-            - build-deploy-development:
-                  stage: "development"
-                  requires:
-                      - terraform-init-and-apply-to-development
-                  filters:
-                      branches:
-                          only: main
+            # - assume-role-development:
+            #       context: api-assume-role-housing-development-context
+            #       requires:
+            #         #   - security-scan
+            #           - lint-and-test
+            #       filters:
+            #           branches:
+            #               only: main
+            # - terraform-init-and-apply-to-development:
+            #       requires:
+            #           - assume-role-development
+            #       filters:
+            #           branches:
+            #               only: main
+            # - build-deploy-development:
+            #       stage: "development"
+            #       requires:
+            #           - terraform-init-and-apply-to-development
+            #       filters:
+            #           branches:
+            #               only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "development"
@@ -286,37 +286,37 @@ workflows:
     continuous-delivery-staging:
         when: << pipeline.parameters.run_staging_workflow >>
         jobs:
-            - permit-deploy-staging:
-                  type: approval
-                  filters:
-                      branches:
-                          only: main
-            - install-dependencies:
-                  requires:
-                      - permit-deploy-staging
-            - lint-and-test:
-                  requires:
-                      - install-dependencies
-            - assume-role-staging:
-                  context: api-assume-role-housing-staging-context
-                  requires:
-                      - lint-and-test
-                  filters:
-                      branches:
-                          only: main
-            - terraform-init-and-apply-to-staging:
-                  requires:
-                      - assume-role-staging
-                  filters:
-                      branches:
-                          only: main
-            - build-deploy-staging:
-                  stage: "staging"
-                  requires:
-                      - terraform-init-and-apply-to-staging
-                  filters:
-                      branches:
-                          only: main
+            # - permit-deploy-staging:
+            #       type: approval
+            #       filters:
+            #           branches:
+            #               only: main
+            # - install-dependencies:
+            #       requires:
+            #           - permit-deploy-staging
+            # - lint-and-test:
+            #       requires:
+            #           - install-dependencies
+            # - assume-role-staging:
+            #       context: api-assume-role-housing-staging-context
+            #       requires:
+            #           - lint-and-test
+            #       filters:
+            #           branches:
+            #               only: main
+            # - terraform-init-and-apply-to-staging:
+            #       requires:
+            #           - assume-role-staging
+            #       filters:
+            #           branches:
+            #               only: main
+            # - build-deploy-staging:
+            #       stage: "staging"
+            #       requires:
+            #           - terraform-init-and-apply-to-staging
+            #       filters:
+            #           branches:
+            #               only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "staging"
@@ -329,41 +329,41 @@ workflows:
     continuous-delivery-production:
         when: << pipeline.parameters.run_production_workflow >>
         jobs:   
-            - permit-production-terraform-release:
-                  type: approval
-                  filters:
-                      branches:
-                          only: main
-            - install-dependencies:
-                  requires:
-                      - permit-production-terraform-release
-            - lint-and-test:
-                  requires:
-                      - install-dependencies
-            - assume-role-production:
-                  context: api-assume-role-housing-production-context
-                  requires:
-                      - lint-and-test
-                  filters:
-                      branches:
-                          only: main
-            - terraform-init-and-apply-to-production:
-                  requires:
-                      - assume-role-production
-                  filters:
-                      branches:
-                          only: main
-            - permit-deploy-production:
-                  type: approval
-                  requires:
-                      - terraform-init-and-apply-to-production
-            - build-deploy-production:
-                  stage: "production"
-                  requires:
-                      - permit-deploy-production
-                  filters:
-                      branches:
-                          only: main
+            # - permit-production-terraform-release:
+            #       type: approval
+            #       filters:
+            #           branches:
+            #               only: main
+            # - install-dependencies:
+            #       requires:
+            #           - permit-production-terraform-release
+            # - lint-and-test:
+            #       requires:
+            #           - install-dependencies
+            # - assume-role-production:
+            #       context: api-assume-role-housing-production-context
+            #       requires:
+            #           - lint-and-test
+            #       filters:
+            #           branches:
+            #               only: main
+            # - terraform-init-and-apply-to-production:
+            #       requires:
+            #           - assume-role-production
+            #       filters:
+            #           branches:
+            #               only: main
+            # - permit-deploy-production:
+            #       type: approval
+            #       requires:
+            #           - terraform-init-and-apply-to-production
+            # - build-deploy-production:
+            #       stage: "production"
+            #       requires:
+            #           - permit-deploy-production
+            #       filters:
+            #           branches:
+            #               only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "production"
