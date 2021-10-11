@@ -278,7 +278,8 @@ workflows:
                   context: mtfh-mfe-e2e-tests
                   stage: "development"
                   requires:
-                      - build-deploy-development
+                    #   - build-deploy-development
+                      - lint-and-test
                   filters:
                       branches:
                           only: main
@@ -320,8 +321,8 @@ workflows:
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "staging"
-                  requires:
-                      - build-deploy-staging
+                #   requires:
+                #       - build-deploy-staging
                   filters:
                       branches:
                           only: main
@@ -367,8 +368,8 @@ workflows:
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "production"
-                  requires:
-                      - build-deploy-production
+                #   requires:
+                #       - build-deploy-production
                   filters:
                       branches:
                           only: main
