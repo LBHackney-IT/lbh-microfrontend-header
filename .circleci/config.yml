@@ -276,6 +276,7 @@ workflows:
                           only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
+                  stage: "development"
                   requires:
                       - build-deploy-development
                   filters:
@@ -318,6 +319,7 @@ workflows:
                           only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
+                  stage: "staging"
                   requires:
                       - build-deploy-staging
                   filters:
@@ -364,6 +366,7 @@ workflows:
                           only: main
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
+                  stage: "production"
                   requires:
                       - build-deploy-production
                   filters:
