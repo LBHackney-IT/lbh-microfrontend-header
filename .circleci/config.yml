@@ -292,7 +292,7 @@ workflows:
             #       filters:
             #           branches:
             #               only: main
-            - install-dependencies:
+            - install-dependencies
                 #   requires:
                 #       - permit-deploy-staging
             - lint-and-test:
@@ -336,7 +336,7 @@ workflows:
             #       filters:
             #           branches:
             #               only: main
-            - install-dependencies:
+            - install-dependencies
                 #   requires:
                 #       - permit-production-terraform-release
             - lint-and-test:
