@@ -292,12 +292,12 @@ workflows:
             #       filters:
             #           branches:
             #               only: main
-            # - install-dependencies:
-            #       requires:
-            #           - permit-deploy-staging
-            # - lint-and-test:
-            #       requires:
-            #           - install-dependencies
+            - install-dependencies:
+                #   requires:
+                #       - permit-deploy-staging
+            - lint-and-test:
+                  requires:
+                      - install-dependencies
             # - assume-role-staging:
             #       context: api-assume-role-housing-staging-context
             #       requires:
@@ -321,8 +321,9 @@ workflows:
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "staging"
-                #   requires:
-                #       - build-deploy-staging
+                  requires:
+                    #   - build-deploy-staging
+                      - lint-and-test
                   filters:
                       branches:
                           only: main
@@ -335,12 +336,12 @@ workflows:
             #       filters:
             #           branches:
             #               only: main
-            # - install-dependencies:
-            #       requires:
-            #           - permit-production-terraform-release
-            # - lint-and-test:
-            #       requires:
-            #           - install-dependencies
+            - install-dependencies:
+                #   requires:
+                #       - permit-production-terraform-release
+            - lint-and-test:
+                  requires:
+                      - install-dependencies
             # - assume-role-production:
             #       context: api-assume-role-housing-production-context
             #       requires:
@@ -368,8 +369,9 @@ workflows:
             - trigger-e2e-pipeline:
                   context: mtfh-mfe-e2e-tests
                   stage: "production"
-                #   requires:
-                #       - build-deploy-production
+                  requires:
+                    #   - build-deploy-production
+                      - lint-and-test
                   filters:
                       branches:
                           only: main
