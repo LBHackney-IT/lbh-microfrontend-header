@@ -282,7 +282,7 @@ workflows:
                       - lint-and-test
                   filters:
                       branches:
-                          only: main
+                          only: MTTL-1726_Add_scoped_tests_to_MFE_pipelines
 
     continuous-delivery-staging:
         when: << pipeline.parameters.run_staging_workflow >>
