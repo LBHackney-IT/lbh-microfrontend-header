@@ -223,7 +223,7 @@ jobs:
                 type: string
         steps:
         - run: |
-                export $CIRCLE_PROJECT_REPONAME=$PROJECT_REPONAME
+                export PROJECT_REPONAME="$CIRCLE_PROJECT_REPONAME"
                 echo "Project repo is $PROJECT_REPONAME"
                 export DEPLOYMENT_ENVIRONMENT='<<parameters.stage>>_environment'
                 curl --location --request POST 'https://circleci.com/api/v2/project/gh/LBHackney-IT/mtfh-tl-e2e-tests/pipeline' \
