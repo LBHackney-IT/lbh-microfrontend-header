@@ -1,0 +1,16 @@
+@import "~lbh-frontend/lbh/base";
+@import "~govuk-frontend/govuk/components/phase-banner";
+
+.phase-tag-prod {
+  background-color: lbh-colour("lbh-a01");
+}
+
+.phase-tag-staging {
+  color: lbh-colour("lbh-text");
+  background-color: lbh-colour("lbh-h04");
+}
+
+.phase-tag-development {
+  background-color: lbh-colour("lbh-f03");
+
+}
