@@ -6,6 +6,12 @@ const locale = {
     hackney: "Hackney",
     manageMyHome: "Manage my Home",
   },
+  betaBanner: {
+    manageMyHomeUnderDev: "Manage My home is under development.",
+    reportIssue: "Report an issue",
+    or: "or",
+    suggestFeature: "suggest a new feature",
+  },
 };
 
 export default locale;
