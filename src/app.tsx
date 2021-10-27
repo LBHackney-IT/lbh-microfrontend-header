@@ -29,7 +29,7 @@ export default function Root(): JSX.Element {
 
   const { environmentName, color } = useMemo(() => {
     switch (appEnv) {
-      case "development":
+      case "dev":
         return { environmentName: "DEVELOPMENT", color: "red" };
       case "staging":
         return { environmentName: "STAGING", color: "yellow" };

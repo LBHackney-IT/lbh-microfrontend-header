@@ -1,3 +1,3 @@
 export const config = {
-  appEnv: process.env.APP_ENV || "development",
+  appEnv: process.env.APP_ENV || "dev",
 };
