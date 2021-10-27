@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import { BetaBanner } from "./components";
-import { locale } from "./services";
+import { config, locale } from "./services";
 
 import { $auth, isAuthorised, logout } from "@mtfh/common/lib/auth";
-import { Link } from "@mtfh/common/lib/components";
+import { Link, PhaseBanner } from "@mtfh/common/lib/components";
+
+const { appEnv } = config;
 
 const {
   welcome,
@@ -13,6 +14,8 @@ const {
   signOut,
   branding: { hackney, manageMyHome },
 } = locale;
+
+const { manageMyHomeUnderDev, reportIssue, or, suggestFeature } = locale.betaBanner;
 
 export default function Root(): JSX.Element {
   const [auth, setAuth] = useState($auth.getValue());
@@ -22,6 +25,19 @@ export default function Root(): JSX.Element {
     return () => {
       sub.unsubscribe();
     };
+  }, []);
+
+  const { environmentName, color } = useMemo(() => {
+    switch (appEnv) {
+      case "dev":
+        return { environmentName: "DEVELOPMENT", color: "red" };
+      case "staging":
+        return { environmentName: "STAGING", color: "yellow" };
+      case "production":
+        return { environmentName: "BETA", color: "green" };
+      default:
+        return { environmentName: "DEVELOPMENT", color: "red" };
+    }
   }, []);
 
   return (
@@ -77,7 +93,18 @@ export default function Root(): JSX.Element {
           </div>
         </div>
       </header>
-      <BetaBanner />
+      <PhaseBanner tag={environmentName} variant={color}>
+        <span>
+          {manageMyHomeUnderDev}{" "}
+          <a target="_blank" href="https://forms.gle/5kUGcRYFwwaZWrGs8" rel="noreferrer">
+            {reportIssue}
+          </a>{" "}
+          {or}{" "}
+          <a target="_blank" href="https://forms.gle/yM7zCKYZcuVzSXkC6" rel="noreferrer">
+            {suggestFeature}
+          </a>
+        </span>
+      </PhaseBanner>
     </>
   );
 }
