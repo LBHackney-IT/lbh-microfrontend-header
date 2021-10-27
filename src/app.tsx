@@ -6,8 +6,6 @@ import { config, locale } from "./services";
 import { $auth, isAuthorised, logout } from "@mtfh/common/lib/auth";
 import { Link, PhaseBanner } from "@mtfh/common/lib/components";
 
-const { appEnv } = config;
-
 const {
   welcome,
   signIn,
@@ -18,6 +16,8 @@ const {
 const { manageMyHomeUnderDev, reportIssue, or, suggestFeature } = locale.betaBanner;
 
 export default function Root(): JSX.Element {
+  const { appEnv } = config;
+
   const [auth, setAuth] = useState($auth.getValue());
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Root(): JSX.Element {
 
   const { environmentName, color } = useMemo(() => {
     switch (appEnv) {
-      case "dev":
+      case "development":
         return { environmentName: "DEVELOPMENT", color: "red" };
       case "staging":
         return { environmentName: "STAGING", color: "yellow" };
@@ -38,7 +38,7 @@ export default function Root(): JSX.Element {
       default:
         return { environmentName: "DEVELOPMENT", color: "red" };
     }
-  }, []);
+  }, [appEnv]);
 
   return (
     <>
