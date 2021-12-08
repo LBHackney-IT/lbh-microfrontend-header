@@ -1,12 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+
+import { ConfirmationRouter } from "@mtfh/common/lib/components";
 
 import App from "./app";
 
-export default function Root(): JSX.Element {
-  return (
-    <Router>
-      <App />
-    </Router>
-  );
-}
+const Root = (): JSX.Element => (
+  <ConfirmationRouter>
+    <App />
+  </ConfirmationRouter>
+);
+
+export default Root;

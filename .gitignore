@@ -1,3 +1,8 @@
+cypress/config
+cypress/fixtures/feature-toggles.json
+cypress/screenshots
+cypress/videos
+
 # Logs
 logs
 *.log

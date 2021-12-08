@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-import { config, locale } from "./services";
-
 import { $auth, isAuthorised, logout } from "@mtfh/common/lib/auth";
 import { Link, PhaseBanner } from "@mtfh/common/lib/components";
+
+import { config, locale } from "./services";
 
 const {
   welcome,
@@ -14,10 +14,10 @@ const {
 } = locale;
 
 const { manageMyHomeUnderDev, reportIssue, or, suggestFeature } = locale.betaBanner;
+const { headerNavigation } = locale.a11y;
 
-export default function Root(): JSX.Element {
+const App = (): JSX.Element => {
   const { appEnv } = config;
-
   const [auth, setAuth] = useState($auth.getValue());
 
   useEffect(() => {
@@ -29,8 +29,6 @@ export default function Root(): JSX.Element {
 
   const { environmentName, color } = useMemo(() => {
     switch (appEnv) {
-      case "development":
-        return { environmentName: "DEVELOPMENT", color: "red" };
       case "staging":
         return { environmentName: "STAGING", color: "yellow" };
       case "production":
@@ -42,9 +40,12 @@ export default function Root(): JSX.Element {
 
   return (
     <>
-      <header className="lbh-header">
+      <div className="lbh-header">
         <div className="lbh-header__main">
-          <div className="container-max-width lbh-header__wrapper lbh-header__wrapper--stacked">
+          <nav
+            className="container-max-width lbh-header__wrapper lbh-header__wrapper--stacked"
+            aria-label={headerNavigation}
+          >
             <div className="mtfh-header__section">
               <div className="lbh-header__title">
                 <RouterLink to="/" className="lbh-header__title-link">
@@ -90,9 +91,9 @@ export default function Root(): JSX.Element {
                 <RouterLink to="/login">{signIn}</RouterLink>
               )}
             </div>
-          </div>
+          </nav>
         </div>
-      </header>
+      </div>
       <PhaseBanner tag={environmentName} variant={color}>
         <span>
           {manageMyHomeUnderDev}{" "}
@@ -107,4 +108,6 @@ export default function Root(): JSX.Element {
       </PhaseBanner>
     </>
   );
-}
+};
+
+export default App;

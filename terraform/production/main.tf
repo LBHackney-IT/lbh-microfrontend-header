@@ -38,8 +38,9 @@ module "cloudfront-production" {
   cname_aliases = []
   environment_name = "production"
   cost_code= "B0811"
-  project_name= "MTFH Tenants and Leaseholders"
+  project_name = "MTFH Tenants and Leaseholders"
   use_cloudfront_cert = true
+  compress = true
 }
 resource "aws_ssm_parameter" "cdn" {
   name  = "/housing-tl/production/header-app-url"

@@ -12,6 +12,9 @@ const locale = {
     or: "or",
     suggestFeature: "suggest a new feature",
   },
+  a11y: {
+    headerNavigation: "header navigation",
+  },
 };
 
 export default locale;

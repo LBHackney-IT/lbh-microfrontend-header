@@ -3,9 +3,9 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import Root from "./root.component";
-
 import { $auth, logout } from "@mtfh/common/lib/auth";
+
+import Root from "./root.component";
 
 const mockUser = {
   token:
