@@ -269,7 +269,7 @@ workflows:
         jobs:   
             - permit-production-terraform-release:
                 type: approval
-            - install-dependencies
+            - install-dependencies:
                 requires:
                     - permit-production-terraform-release
             - assume-role-production:
