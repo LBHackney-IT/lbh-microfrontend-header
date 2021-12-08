@@ -185,7 +185,7 @@ jobs:
                 type: string
         steps:
         - run: |
-                curl --location --request POST 'https://circleci.com/api/v2/project/gh/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline' \
+                curl --location --request POST 'https://circleci.com/api/v2/project/gh/'"$CIRCLE_PROJECT_USERNAME"'/'"$CIRCLE_PROJECT_REPONAME"'/pipeline' \
                 --header 'Circle-Token: '"$CIRCLE_TOKEN"'' \
                 --header 'Content-Type: application/json' \
                 --data '{"branch": "main", "parameters": {"stage": "<<parameters.stage>>"}}'
