@@ -194,7 +194,7 @@ workflows:
     version: 2
     continuous-delivery-development:
         when: 
-            condition:
+            and:
                 - equal: [ development, << pipeline.parameters.stage >> ]
         jobs:
             - install-dependencies
@@ -239,8 +239,10 @@ workflows:
                 - equal: [ staging, << pipeline.parameters.stage >> ]
                 - equal: [ main, << pipeline.git.branch >> ]
         jobs:
+            - install-dependencies
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
+                  requires: install-dependencies
             - e2e:
                 requires:
                     - assume-role-staging
@@ -267,10 +269,13 @@ workflows:
         jobs:   
             - permit-production-terraform-release:
                 type: approval
+            - install-dependencies
+                requires:
+                    - permit-production-terraform-release
             - assume-role-production:
                 context: api-assume-role-housing-production-context
                 requires:
-                    - permit-production-terraform-release
+                    - install-dependencies
             - e2e:
                 requires:
                     - assume-role-production
