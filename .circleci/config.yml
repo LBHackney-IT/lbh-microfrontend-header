@@ -242,7 +242,8 @@ workflows:
             - install-dependencies
             - assume-role-staging:
                   context: api-assume-role-housing-staging-context
-                  requires: install-dependencies
+                  requires: 
+                    - install-dependencies
             - e2e:
                 requires:
                     - assume-role-staging
